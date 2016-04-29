@@ -51,7 +51,6 @@ namespace KottanLvivSolution
                     sum += n;
             }
             num1 += (10 - sum % 10).ToString();
-            Console.WriteLine("22" + IsCreditCardNumberValid(num1));
             num1 = num1.Insert(4, " ");
             num1 = num1.Insert(9, " ");
             num1 = num1.Insert(14, " ");
