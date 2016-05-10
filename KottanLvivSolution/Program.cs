@@ -27,53 +27,91 @@ namespace KottanLvivSolution
 
         static string GenerateNextCreditCardNumber(string number)
         {
-            int num = Convert.ToInt32(number.Substring(6, 9));
+            int num = Convert.ToInt32(number.Substring(6, number.Length-7));
             num++;
             string nums = num.ToString();
-            if (nums.Length != 9)
+            if (nums.Length != number.Length - 7)
             {
-                for (int i = 0; i <= 9 - nums.Length; i++)
+                for (int i = 0; i <= (number.Length - 7 - nums.Length); i++)
                     nums = nums.Insert(0, "0");
             }
             string num1 = number.Substring(0, 6) + nums;
             int sum = 0;
-            for (int i = 1; i <= num1.Length; i++)
+            if (number.Length % 2 == 0)
             {
-                var n = num1[i - 1] - 48;
-                if (i % 2 != 0)
+                for (int i = 1; i <= num1.Length; i++)
                 {
-                    if ((n * 2) > 9)
-                        sum += (n * 2) - 9;
+                    var n = num1[i - 1] - 48;
+                    if (i % 2 != 0)
+                    {
+                        if ((n * 2) > 9)
+                            sum += (n * 2) - 9;
+                        else
+                            sum += n * 2;
+                    }
                     else
-                        sum += n * 2;
+                        sum += n;
                 }
-                else
-                    sum += n;
             }
-            num1 += (10 - sum % 10).ToString();
-            num1 = num1.Insert(4, " ");
-            num1 = num1.Insert(9, " ");
-            num1 = num1.Insert(14, " ");
+            else
+            {
+                for (int i = 1; i <= num1.Length; i++)
+                {
+                    var n = num1[i - 1] - 48;
+                    if (i % 2 == 0)
+                    {
+                        if ((n * 2) > 9)
+                            sum += (n * 2) - 9;
+                        else
+                            sum += n * 2;
+                    }
+                    else
+                        sum += n;
+                }
+            }
+            if (sum % 10 == 0)
+                num1 += '0';
+            else
+                num1 += (10 - sum % 10).ToString();
             return num1;
         }
 
         static bool IsCreditCardNumberValid(string number)
         {
             int sum = 0;
-            for(int i = 1; i<=number.Length; i++)
+            if (number.Length % 2 == 0)
             {
-                var n = number[i-1]-48;
-                //int n = Convert.ToInt32((char)s);
-                if (i % 2 != 0)
+                for (int i = 1; i <= number.Length; i++)
                 {
-                    if ((n * 2) > 9)
-                        sum += (n * 2) - 9;
+                    var n = number[i - 1] - 48;
+                    //int n = Convert.ToInt32((char)s);
+                    if (i % 2 != 0)
+                    {
+                        if ((n * 2) > 9)
+                            sum += (n * 2) - 9;
+                        else
+                            sum += n * 2;
+                    }
                     else
-                        sum += n * 2;
+                        sum += n;
                 }
-                else
-                    sum += n;
-                
+            }
+            else
+            {
+                for (int i = 1; i <= number.Length; i++)
+                {
+                    var n = number[i - 1] - 48;
+                    //int n = Convert.ToInt32((char)s);
+                    if (i % 2 == 0)
+                    {
+                        if ((n * 2) > 9)
+                            sum += (n * 2) - 9;
+                        else
+                            sum += n * 2;
+                    }
+                    else
+                        sum += n;
+                }
             }
             if (sum % 10 == 0)
                 return true;
@@ -90,7 +128,7 @@ namespace KottanLvivSolution
                 return "Visa";
             if ((two >= 51) && (two <= 55))
                 return "MasterCard";
-            if (((two >= 56) && (two <= 69)) || (two == 50))
+            if ((two >= 56) && (two <= 69))
                 return "Maestro";
             if ((two == 34) || (two == 37))
                 return "American Express";
