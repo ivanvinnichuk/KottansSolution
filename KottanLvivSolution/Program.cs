@@ -27,15 +27,22 @@ namespace KottanLvivSolution
 
         static string GenerateNextCreditCardNumber(string number)
         {
+            if(GetCreditCardVendor(number) == "Unknown")
+                return "The number of creditcart is wron";
             int num = Convert.ToInt32(number.Substring(6, number.Length-7));
             num++;
             string nums = num.ToString();
+            int a = nums.Length;
             if (nums.Length != number.Length - 7)
             {
-                for (int i = 0; i <= (number.Length - 7 - nums.Length); i++)
+                for (int i = 0; i <= (number.Length - 8 - a); i++)
                     nums = nums.Insert(0, "0");
             }
             string num1 = number.Substring(0, 6) + nums;
+            int a1 = num1.Length;
+            int b = number.Length;
+            if (num1.Length + 1 != number.Length)
+                return "No more card numbers available for this vendor";
             int sum = 0;
             if (number.Length % 2 == 0)
             {
@@ -84,7 +91,6 @@ namespace KottanLvivSolution
                 for (int i = 1; i <= number.Length; i++)
                 {
                     var n = number[i - 1] - 48;
-                    //int n = Convert.ToInt32((char)s);
                     if (i % 2 != 0)
                     {
                         if ((n * 2) > 9)
@@ -101,7 +107,6 @@ namespace KottanLvivSolution
                 for (int i = 1; i <= number.Length; i++)
                 {
                     var n = number[i - 1] - 48;
-                    //int n = Convert.ToInt32((char)s);
                     if (i % 2 == 0)
                     {
                         if ((n * 2) > 9)
@@ -120,19 +125,24 @@ namespace KottanLvivSolution
 
         static string GetCreditCardVendor(string number)
         {
+            if(!IsCreditCardNumberValid(number))
+                return "Unknown";
             int four = Convert.ToInt32(number.Substring(0, 4));
             int two = Convert.ToInt32(number.Substring(0, 2));
-            if ((four>=3528) && (four <= 3589))
+            if (((four>=3528) && (four <= 3589)) && (number.Length == 16))
                     return "JCB";
-            if (number.StartsWith("4"))
+            if (number.StartsWith("4") &&((number.Length == 13) || (number.Length == 16) ||(number.Length == 19)))
                 return "Visa";
-            if ((two >= 51) && (two <= 55))
+            if (((two >= 51) && (two <= 55)) && (number.Length == 16))
                 return "MasterCard";
-            if ((two >= 56) && (two <= 69))
+            if (((four >= 2221) && (four <= 2770)) && (number.Length == 16))
+                return "MasterCard, not Active";
+            if (((two >= 56) && (two <= 69) || (two == 50)) &&((number.Length >= 12) && (number.Length <= 19)))
                 return "Maestro";
-            if ((two == 34) || (two == 37))
+            if (((two == 34) || (two == 37)) && (number.Length == 15))
                 return "American Express";
             return "Unknown";
         }
+        
     }
 }
